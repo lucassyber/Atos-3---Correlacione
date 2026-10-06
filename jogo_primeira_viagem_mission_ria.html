@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correlação: Primeira Viagem Missionária</title>
+    <!-- Tailwind CSS para estruturação responsiva moderna -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts para tipografia clássica/aventura -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=MedievalSharp&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #120d08;
+            background-image: radial-gradient(circle at center, #241910 0%, #0d0906 100%);
+            color: #f3e9dc;
+            overflow-x: hidden;
+        }
+
+        .title-font {
+            font-family: 'Cinzel', serif;
+        }
+
+        .scroll-panel {
+            background: linear-gradient(135deg, #dfcaa0 0%, #c4aa7b 50%, #b39561 100%);
+            border: 4px solid #5a3d21;
+            box-shadow: inset 0 0 25px rgba(80, 50, 20, 0.4), 0 15px 35px rgba(0,0,0,0.7);
+        }
+
+        .roman-btn {
+            background: linear-gradient(to bottom, #e2d1b0, #c8b087);
+            border: 2px solid #5a3d21;
+            color: #3d2612;
+            font-weight: 700;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.6);
+            transition: all 0.2s ease;
+        }
+
+        .roman-btn:hover:not(:disabled) {
+            background: linear-gradient(to bottom, #f2e2c2, #dac299);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        }
+
+        .roman-btn.selected {
+            background: linear-gradient(to bottom, #d9822b, #b35914) !important;
+            color: #ffffff !important;
+            border-color: #ffe6a7;
+            box-shadow: 0 0 15px rgba(217, 130, 43, 0.8), inset 0 0 8px rgba(255,255,255,0.4);
+        }
+
+        .roman-btn.correct {
+            background: linear-gradient(to bottom, #3b7a3b, #265426) !important;
+            color: #ffffff !important;
+            border-color: #88d498;
+            box-shadow: 0 0 15px rgba(59, 122, 59, 0.8);
+        }
+
+        .roman-btn.wrong {
+            background: linear-gradient(to bottom, #9e3636, #702020) !important;
+            color: #ffffff !important;
+            border-color: #f08080;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        /* Estrada romana decorativa central */
+        .roman-road {
+            background: repeating-linear-gradient(
+                0deg,
+                #6b533a,
+                #6b533a 20px,
+                #4e3b2a 20px,
+                #4e3b2a 24px
+            );
+            border-left: 3px solid #d4af37;
+            border-right: 3px solid #d4af37;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        /* Efeito de brilho dourado */
+        .gold-glow {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(212, 175, 55, 0.6);
+        }
+
+        /* Animação suave para modais e telas */
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between p-4 md:p-6 select-none relative">
+
+    <!-- Elementos de Cabeçalho / Painel Principal -->
+    <div class="w-full max-w-5xl mx-auto flex flex-col items-center">
+        
+        <!-- Placa Superior Romana -->
+        <header class="w-full scroll-panel rounded-2xl p-4 md:p-5 mb-6 text-center relative shadow-2xl">
+            <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#5a3d21] text-[#f3e9dc] px-6 py-1 rounded-full text-xs font-bold uppercase tracking-widest border border-[#d4af37]">
+                Desafio Bíblico Histórico
+            </div>
+            
+            <h1 class="title-font text-2xl md:text-4xl font-black text-[#3d2612] gold-glow uppercase tracking-wider mt-1">
+                Correlacione
+            </h1>
+            <h2 class="title-font text-lg md:text-2xl font-bold text-[#5a3d21] mt-1">
+                Primeira Viagem Missionária
+            </h2>
+
+            <!-- Temporizador Flutuante -->
+            <div class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-[#2b1b11] border-2 border-[#d4af37] px-3.5 py-1.5 rounded-xl shadow-inner flex items-center gap-2">
+                <i class="fa-solid fa-hourglass-half text-[#d4af37] animate-pulse"></i>
+                <span id="timer-display" class="title-font text-lg md:text-xl font-bold text-[#f3e9dc]">01:30</span>
+            </div>
+        </header>
+
+        <!-- Área Central de Jogo -->
+        <main class="w-full grid grid-cols-1 md:grid-cols-12 gap-4 items-center relative">
+            
+            <!-- Coluna Esquerda: Cidades -->
+            <div class="md:col-span-5 flex flex-col gap-3 z-10" id="cities-container">
+                <div class="text-center font-bold text-[#d4af37] text-sm uppercase tracking-wider mb-1">
+                    <i class="fa-solid fa-city mr-1">} Cidades Visitadas</i>
+                </div>
+                <!-- Inseridas dinamicamente via JS -->
+            </div>
+
+            <!-- Coluna Central: Estrada Romana / Conexões Decorativas -->
+            <div class="md:col-span-2 hidden md:flex flex-col items-center justify-center h-full min-h-[420px] relative">
+                <div class="w-16 h-full roman-road rounded-lg relative flex flex-col items-center justify-around py-4">
+                    <div class="w-8 h-8 rounded-full bg-[#d4af37] border-2 border-[#5a3d21] flex items-center justify-center shadow-lg">
+                        <i class="fa-solid fa-road text-[#3d2612] text-xs"></i>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-[#d4af37] border-2 border-[#5a3d21] flex items-center justify-center shadow-lg">
+                        <i class="fa-solid fa-landmark text-[#3d2612] text-xs"></i>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-[#d4af37] border-2 border-[#5a3d21] flex items-center justify-center shadow-lg">
+                        <i class="fa-solid fa-scroll text-[#3d2612] text-xs"></i>
+                    </div>
+                </div>
+                <!-- Canvas para desenhar as linhas de ligação das corretas -->
+                <canvas id="connection-canvas" class="absolute inset-0 pointer-events-none w-full h-full z-20"></canvas>
+            </div>
+
+            <!-- Coluna Direita: Acontecimentos -->
+            <div class="md:col-span-5 flex flex-col gap-3 z-10" id="events-container">
+                <div class="text-center font-bold text-[#d4af37] text-sm uppercase tracking-wider mb-1">
+                    <i class="fa-solid fa-bolt mr-1">} Acontecimentos Bíblicos</i>
+                </div>
+                <!-- Inseridas dinamicamente via JS -->
+            </div>
+
+        </main>
+
+        <!-- Rodapé e Controles -->
+        <footer class="w-full mt-6 flex flex-wrap items-center justify-between gap-4 bg-[#1f140c] p-4 rounded-xl border border-[#5a3d21] shadow-lg">
+            <div class="flex items-center gap-3 text-sm text-[#d4af37]">
+                <i class="fa-solid fa-compass text-xl animate-spin" style="animation-duration: 12s;"></i>
+                <span id="score-status">Acertos: <strong class="text-white">0</strong> / 6</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- Botão de Música de Aventura -->
+                <button id="audio-toggle-btn" onclick="toggleAdventureMusic()" class="roman-btn px-4 py-2 rounded-xl text-sm flex items-center gap-2 cursor-pointer">
+                    <i id="audio-icon" class="fa-solid fa-volume-xmark text-base"></i>
+                    <span id="audio-text">Música de Aventura: Desligada</span>
+                </button>
+
+                <!-- Botão Reiniciar -->
+                <button onclick="resetGame()" class="roman-btn px-4 py-2 rounded-xl text-sm flex items-center gap-2 cursor-pointer bg-gradient-to-bottom from-[#d9822b] to-[#b35914] text-white">
+                    <i class="fa-solid fa-rotate-right"></i> Reiniciar Viagem
+                </button>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Modal de Fim de Jogo (Vitória / Derrota) -->
+    <div id="game-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 fade-in">
+        <div class="scroll-panel max-w-md w-full p-6 md:p-8 rounded-3xl text-center relative">
+            <div id="modal-icon" class="text-5xl md:text-6xl text-[#d4af37] mb-3">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h3 id="modal-title" class="title-font text-2xl md:text-3xl font-black text-[#3d2612] uppercase mb-2">
+                Parabéns, Viajante!
+            </h3>
+            <p id="modal-desc" class="text-[#3d2612] font-semibold text-base mb-6">
+                Você completou com êxito a primeira viagem missionária pelas estradas romanas!
+            </p>
+            <div class="bg-[#2b1b11] p-4 rounded-2xl text-[#f3e9dc] mb-6 border border-[#d4af37]/40 flex justify-around">
+                <div>
+                    <span class="block text-xs text-[#d4af37] uppercase">Tempo Restante</span>
+                    <span id="modal-time" class="title-font text-xl font-bold">00:00</span>
+                </div>
+                <div>
+                    <span class="block text-xs text-[#d4af37] uppercase">Status</span>
+                    <span class="title-font text-xl font-bold text-emerald-400">Missão Cumprida</span>
+                </div>
+            </div>
+            <button onclick="resetGame()" class="w-full roman-btn py-3 rounded-xl text-lg font-bold flex items-center justify-center gap-2 bg-gradient-to-r from-[#d9822b] to-[#b35914] text-white shadow-lg cursor-pointer">
+                <i class="fa-solid fa-play">} Jogar Novamente</i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const gamePairs = [
+            { id: 1, city: "Listra", event: "Apedrejamento violento" },
+            { id: 2, city: "Pafos", event: "Falso profeta" },
+            { id: 3, city: "Atália", event: "Cidade apenas de volta" },
+            { id: 4, city: "Perge", event: "Abandono de João Marcos" },
+            { id: 5, city: "Antioquia da Síria", event: "Base Missionária" },
+            { id: 6, city: "Antioquia da Pisidia", event: "Foram expulsos" }
+        ];
+
+        let selectedCity = null;
+        let matchedPairs = 0;
+        let timeLeft = 90; // 1 minuto e 30 segundos
+        let timerInterval = null;
+        let gameActive = true;
+        
+        // Estado da Música de Aventura (Web Audio API)
+        let audioCtx = null;
+        let isMusicPlaying = false;
+        let musicInterval = null;
+
+        // Embaralhar arrays de forma independente
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        let shuffledCities = [];
+        let shuffledEvents = [];
+
+        function initGame() {
+            clearInterval(timerInterval);
+            matchedPairs = 0;
+            timeLeft = 90;
+            gameActive = true;
+            selectedCity = null;
+            document.getElementById('game-modal').classList.add('hidden');
+            document.getElementById('score-status').innerHTML = `Acertos: <strong class="text-white">0</strong> / 6`;
+
+            shuffledCities = shuffle([...gamePairs]);
+            shuffledEvents = shuffle([...gamePairs]);
+
+            renderBoard();
+            startTimer();
+        }
+
+        function renderBoard() {
+            const citiesContainer = document.getElementById('cities-container');
+            const eventsContainer = document.getElementById('events-container');
+
+            citiesContainer.innerHTML = `<div class="text-center font-bold text-[#d4af37] text-xs uppercase tracking-wider mb-1"><i class="fa-solid fa-city mr-1"></i> Cidades Visitadas</div>`;
+            eventsContainer.innerHTML = `<div class="text-center font-bold text-[#d4af37] text-xs uppercase tracking-wider mb-1"><i class="fa-solid fa-bolt mr-1"></i> Acontecimentos Bíblicos</div>`;
+
+            shuffledCities.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = `roman-btn w-full py-3 px-4 rounded-xl text-left font-bold text-sm md:text-base flex items-center justify-between transition-all duration-200`;
+                btn.id = `city-${item.id}`;
+                btn.innerHTML = `<span>${item.city}</span> <i class="fa-solid fa-map-pin text-[#5a3d21]/60"></i>`;
+                
+                if (item.matched) {
+                    btn.classList.add('correct');
+                    btn.disabled = true;
+                } else {
+                    btn.onclick = () => selectCityItem(item.id);
+                }
+                citiesContainer.appendChild(btn);
+            });
+
+            shuffledEvents.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = `roman-btn w-full py-3 px-4 rounded-xl text-left font-bold text-sm md:text-base flex items-center justify-between transition-all duration-200`;
+                btn.id = `event-${item.id}`;
+                btn.innerHTML = `<span>${item.event}</span> <i class="fa-solid fa-feather text-[#5a3d21]/60"></i>`;
+                
+                if (item.matched) {
+                    btn.classList.add('correct');
+                    btn.disabled = true;
+                } else {
+                    btn.onclick = () => selectEventItem(item.id);
+                }
+                eventsContainer.appendChild(btn);
+            });
+        }
+
+        function selectCityItem(id) {
+            if (!gameActive) return;
+            
+            // Remover seleção anterior de cidade
+            document.querySelectorAll('#cities-container button').forEach(b => {
+                if(!b.classList.contains('correct')) b.classList.remove('selected');
+            });
+
+            selectedCity = id;
+            const btn = document.getElementById(`city-${id}`);
+            if(!btn.classList.contains('correct')) {
+                btn.classList.add('selected');
+                playClickSound();
+            }
+        }
+
+        function selectEventItem(eventId) {
+            if (!gameActive) return;
+            if (selectedCity === null) {
+                // Feedback visual ou aviso se nenhuma cidade foi escolhida antes
+                return;
+            }
+
+            const cityBtn = document.getElementById(`city-${selectedCity}`);
+            const eventBtn = document.getElementById(`event-${eventId}`);
+
+            if (selectedCity === eventId) {
+                // ACERTOU!
+                cityBtn.classList.remove('selected');
+                cityBtn.classList.add('correct');
+                cityBtn.disabled = true;
+
+                eventBtn.classList.add('correct');
+                eventBtn.disabled = true;
+
+                // Marcar como resolvido nos arrays
+                shuffledCities.find(c => c.id === selectedCity).matched = true;
+                shuffledEvents.find(e => e.id === eventId).matched = true;
+
+                matchedPairs++;
+                document.getElementById('score-status').innerHTML = `Acertos: <strong class="text-white">${matchedPairs}</strong> / 6`;
+                playSuccessSound();
+
+                selectedCity = null;
+
+                if (matchedPairs === 6) {
+                    endGame(true);
+                }
+            } else {
+                // ERROU!
+                cityBtn.classList.remove('selected');
+                cityBtn.classList.add('wrong');
+                eventBtn.classList.add('wrong');
+                playErrorSound();
+
+                gameActive = false;
+                setTimeout(() => {
+                    cityBtn.classList.remove('wrong');
+                    eventBtn.classList.remove('wrong');
+                    selectedCity = null;
+                    gameActive = true;
+                }, 500);
+            }
+        }
+
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    endGame(false);
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer-display').innerText = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function endGame(isVictory) {
+            clearInterval(timerInterval);
+            gameActive = false;
+
+            const modal = document.getElementById('game-modal');
+            const icon = document.getElementById('modal-icon');
+            const title = document.getElementById('modal-title');
+            const desc = document.getElementById('modal-desc');
+            const timeSpan = document.getElementById('modal-time');
+
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timeSpan.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            if (isVictory) {
+                icon.innerHTML = `<i class="fa-solid fa-trophy text-amber-400"></i>`;
+                title.innerText = "Parabéns, Viajante!";
+                desc.innerText = "Você completou com êxito a primeira viagem missionária pelas estradas romanas!";
+                playVictorySound();
+            } else {
+                icon.innerHTML = `<i class="fa-solid fa-hourglass-end text-red-400"></i>`;
+                title.innerText = "Tempo Esgotado!";
+                desc.innerText = "As estradas romanas eram difíceis, mas você pode tentar novamente!";
+                playGameOverSound();
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function resetGame() {
+            initGame();
+        }
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playClickSound() {
+            try {
+                initAudioContext();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.1);
+            } catch (e) {}
+        }
+
+        function playSuccessSound() {
+            try {
+                initAudioContext();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(now + 0.4);
+            } catch (e) {}
+        }
+
+        function playErrorSound() {
+            try {
+                initAudioContext();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.setValueAtTime(100, now + 0.15);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(now + 0.3);
+            } catch (e) {}
+        }
+
+        function playVictorySound() {
+            try {
+                initAudioContext();
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // Arpejo triunfante
+                notes.forEach((freq, index) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    const now = audioCtx.currentTime + (index * 0.15);
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                });
+            } catch (e) {}
+        }
+
+        function playGameOverSound() {
+            try {
+                initAudioContext();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, now);
+                osc.frequency.setValueAtTime(120, now + 0.3);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(now + 0.6);
+            } catch (e) {}
+        }
+
+        // Trilha Sonora de Aventura em Loop com Web Audio API
+        const adventureMelody = [
+            { freq: 261.63, duration: 0.3 }, // C4
+            { freq: 329.63, duration: 0.3 }, // E4
+            { freq: 392.00, duration: 0.3 }, // G4
+            { freq: 523.25, duration: 0.6 }, // C5
+            { freq: 440.00, duration: 0.3 }, // A4
+            { freq: 493.88, duration: 0.3 }, // B4
+            { freq: 523.25, duration: 0.6 }  // C5
+        ];
+        let melodyStep = 0;
+
+        function playAdventureLoopStep() {
+            if (!isMusicPlaying) return;
+            try {
+                initAudioContext();
+                const note = adventureMelody[melodyStep];
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(note.freq, audioCtx.currentTime);
+                
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + note.duration);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + note.duration);
+
+                melodyStep = (melodyStep + 1) % adventureMelody.length;
+            } catch(e) {}
+        }
+
+        function toggleAdventureMusic() {
+            initAudioContext();
+            isMusicPlaying = !isMusicPlaying;
+            const icon = document.getElementById('audio-icon');
+            const text = document.getElementById('audio-text');
+
+            if (isMusicPlaying) {
+                icon.className = "fa-solid fa-volume-high text-base text-emerald-400";
+                text.innerText = "Música de Aventura: Ligada";
+                musicInterval = setInterval(playAdventureLoopStep, 350);
+            } else {
+                icon.className = "fa-solid fa-volume-xmark text-base";
+                text.innerText = "Música de Aventura: Desligada";
+                clearInterval(musicInterval);
+            }
+        }
+
+        // Inicializar o jogo ao carregar a página
+        window.onload = function() {
+            initGame();
+        };
+    </script>
+</body>
+</html>
